@@ -5,12 +5,6 @@ var Dir = {
     Right: 4,
 };
 
-function printAllNames(obj) {
-    for (var name in obj) {
-        print(name, obj[name]);
-    }
-}
-
 function isOnDesktop(c, d) {
     return c.onAllDesktops || c.desktop == d;
 }
@@ -33,8 +27,8 @@ function switchWindow(dir) {
     for (var i in list) {
         var client = list[i];
         // ignore activity for now...
-        if (!wantsTabFocus(client) || client == c || client.minimized || !isOnDesktop(client, desktopNumber) ||
-            !client.isCurrentTab)
+        if (!wantsTabFocus(client) || client == c || client.minimized ||
+            !isOnDesktop(client, desktopNumber) || !client.isCurrentTab)
             continue;
         var otherX = client.x + client.width / 2;
         var otherY = client.y + client.height / 2;
@@ -71,4 +65,27 @@ function switchWindow(dir) {
     }
 }
 
-switchWindow(Dir.Left);
+registerShortcut("SWITCHING: Switch left",
+                 "Switch to left window (no wrapping)",
+                 "Meta+H",
+                 function() {
+                     switchWindow(Dir.Left);
+                 });
+registerShortcut("SWITCHING: Switch right",
+                 "Switch to right window (no wrapping)",
+                 "Meta+L",
+                 function() {
+                     switchWindow(Dir.Right);
+                 });
+registerShortcut("SWITCHING: Switch up",
+                 "Switch to window above (no wrapping)",
+                 "Meta+K",
+                 function() {
+                     switchWindow(Dir.Up);
+                 });
+registerShortcut("SWITCHING: Switch down",
+                 "Switch to window below (no wrapping)",
+                 "Meta+J",
+                 function() {
+                     switchWindow(Dir.Down);
+                 });
