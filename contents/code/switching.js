@@ -28,7 +28,7 @@ function switchWindow(dir) {
         var client = list[i];
         // ignore activity for now...
         if (!wantsTabFocus(client) || client == c || client.minimized ||
-            !isOnDesktop(client, desktopNumber) || !client.isCurrentTab)
+            !isOnDesktop(client, desktopNumber))
             continue;
         var otherX = client.x + client.width / 2;
         var otherY = client.y + client.height / 2;
