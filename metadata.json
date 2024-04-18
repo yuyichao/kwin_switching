@@ -1,0 +1,20 @@
+{
+    "KPlugin": {
+        "Name": "Switching Extension",
+        "Description": "Extension to switch window focus",
+        "Icon": "preferences-system-windows-script-test",
+        "Authors": [
+            {
+                "Email": "yyc1992@gmail.com",
+                "Name": "Yichao Yu"
+            }
+        ],
+        "Id": "kwin-script-switching",
+        "Version": "0.2.0",
+        "License": "GPL",
+        "Website": "https://github.com/yuyichao/kwin_switching"
+    },
+    "X-Plasma-API": "javascript",
+    "X-Plasma-MainScript": "code/switching.js",
+    "KPackageStructure": "KWin/Script"
+}
