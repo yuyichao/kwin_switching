@@ -5,63 +5,76 @@ var Dir = {
     Right: 4,
 };
 
-function isOnDesktop(c, d) {
-    return c.onAllDesktops || c.desktop == d;
+function isOnDesktop(w, d) {
+    if (w.onAllDesktops)
+        return true;
+    for (var cd of w.desktops) {
+        if (cd == d) {
+            return true;
+        }
+    }
+    return false;
 }
 
-function wantsTabFocus(c) {
-    return (c.normalWindow || c.dialog) && c.wantsInput;
+function wantsTabFocus(w) {
+    return (w.normalWindow || w.dialog) && w.wantsInput;
+}
+
+function getWindowDesktop(w) {
+    var ds = w.desktops;
+    if (ds.length != 1)
+        return workspace.currentDesktop;
+    return ds[0];
 }
 
 function switchWindow(dir) {
-    var c = workspace.activeClient;
-    if (c === undefined)
+    var w = workspace.activeWindow;
+    if (w === undefined)
         return;
-    var desktopNumber = (c.onAllDesktops ? workspace.currentDesktop :
-                         c.desktop);
-    var x = c.x + c.width / 2;
-    var y = c.y + c.height / 2;
+    var desktop = getWindowDesktop(w);
+    var x = w.x + w.width / 2;
+    var y = w.y + w.height / 2;
     var switchTo;
     var bestScore = 0;
-    var list = workspace.clientList();
+    var list = workspace.windowList();
     for (var i in list) {
-        var client = list[i];
+        var win = list[i];
         // ignore activity for now...
-        if (!wantsTabFocus(client) || client == c || client.minimized ||
-            !isOnDesktop(client, desktopNumber))
+        if (!wantsTabFocus(win) || win == w || win.minimized ||
+            !isOnDesktop(win, desktop))
             continue;
-        var otherX = client.x + client.width / 2;
-        var otherY = client.y + client.height / 2;
+        var otherX = win.x + win.width / 2;
+        var otherY = win.y + win.height / 2;
         var distance = -1;
         var offset = -1;
         switch (dir) {
-        case Dir.Up:
-            distance = y - otherY;
-            offset = Math.abs(x - otherX);
-            break;
-        case Dir.Down:
-            distance = otherY - y;
-            offset = Math.abs(x - otherX);
-            break;
-        case Dir.Left:
-            distance = x - otherX;
-            offset = Math.abs(y - otherY);
-            break;
-        case Dir.Right:
-            distance = otherX - x;
-            offset = Math.abs(y - otherY);
-            break;
+            case Dir.Up:
+                distance = y - otherY;
+                offset = Math.abs(x - otherX);
+                break;
+            case Dir.Down:
+                distance = otherY - y;
+                offset = Math.abs(x - otherX);
+                break;
+            case Dir.Left:
+                distance = x - otherX;
+                offset = Math.abs(y - otherY);
+                break;
+            case Dir.Right:
+                distance = otherX - x;
+                offset = Math.abs(y - otherY);
+                break;
         }
         if (distance > 0) {
             var score = distance + offset + (offset * offset) / distance;
             if (score < bestScore || switchTo === undefined) {
-                switchTo = client;
+                switchTo = win;
                 bestScore = score;
             }
         }
     }
     if (switchTo !== undefined) {
-        workspace.activeClient = switchTo;
+        workspace.activeWindow = switchTo;
     }
 }
 
